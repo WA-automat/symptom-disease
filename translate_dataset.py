@@ -6,8 +6,10 @@ from hashlib import md5
 import pandas as pd
 import requests
 
-appid = '20240220001968436'
-appkey = 'uKbYiPLuwyF4EsYYqjvC'
+from translate_api import translate_cattle
+
+appid = '20240220001968653'
+appkey = 'XRFhz8Z1F8kArUzXAd0I'
 
 train_df = pd.read_csv('./data/symptom-disease-train-dataset.csv')
 test_df = pd.read_csv('./data/symptom-disease-test-dataset.csv')
@@ -29,6 +31,11 @@ def translate_func(text, source_lang='en', target_lang='zh'):
     url = "https://fanyi-api.baidu.com/api/trans/vip/translate"
     resp = requests.post(url, headers=headers, params=payload)
     trans = resp.json()
+
+    if 'error_code' in list(trans.keys()):
+        print(trans['error_code'])
+        return 'error'
+
     end = time.time()
     total = end - start
     print(f"译文：{trans['trans_result'][0]['dst']}，用时:{total}")
@@ -44,34 +51,36 @@ if __name__ == '__main__':
     #     json.dump(mapping_zh, f2, ensure_ascii=False, indent=4)
 
     # 训练集翻译
-    counter = 0
-    for idx, row in train_df.iterrows():
-        try:
-            translated_text = translate_func(row['text'])
-            train_zh_df.loc[idx, 'text'] = translated_text
-            train_zh_df.loc[idx, 'label'] = row['label']
-
-            counter += 1
-            if counter == 10:
-                train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
-                counter = 0
-        except Exception as e:
-            print(f"翻译第{idx}行时出现异常：{e}")
-
-    # 如果最后一次循环结束后，计数器不为0，则保存一次剩余的结果
-    if counter > 0:
-        train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
+    # counter = 0
+    # for idx, row in train_df.iterrows():
+    #     try:
+    #         translated_text = translate_func(row['text'])
+    #         train_zh_df.loc[idx, 'text'] = translated_text
+    #         train_zh_df.loc[idx, 'label'] = row['label']
+    #
+    #         counter += 1
+    #         if counter == 10:
+    #             train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
+    #             counter = 0
+    #     except Exception as e:
+    #         print(f"翻译第{idx}行时出现异常：{e}")
+    #
+    # # 如果最后一次循环结束后，计数器不为0，则保存一次剩余的结果
+    # if counter > 0:
+    #     train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
 
     # 测试集翻译
     counter = 0
     for idx, row in test_df.iterrows():
         try:
-            translated_text = translate_func(row['text'])
+            translated_text = translate_cattle(row['text'])
+            print(f'译文: {translated_text}')
             test_zh_df.loc[idx, 'text'] = translated_text
             test_zh_df.loc[idx, 'label'] = row['label']
 
             counter += 1
             if counter == 10:
+                print("Finish 10 rows!")
                 test_zh_df.to_csv('./data/symptom-disease-test-dataset-zh.csv')
                 counter = 0
         except Exception as e:
