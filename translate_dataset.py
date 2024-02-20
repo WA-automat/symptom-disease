@@ -80,5 +80,3 @@ if __name__ == '__main__':
     # 如果最后一次循环结束后，计数器不为0，则保存一次剩余的结果
     if counter > 0:
         test_zh_df.to_csv('./data/symptom-disease-test-dataset-zh.csv')
-
-
