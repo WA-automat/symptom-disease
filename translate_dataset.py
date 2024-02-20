@@ -36,17 +36,49 @@ def translate_func(text, source_lang='en', target_lang='zh'):
 
 
 if __name__ == '__main__':
+    # # 映射文件翻译
     # with open('./data/mapping.json', 'r', encoding='utf-8') as f1, \
     #         open('mapping-zh.json', 'w', encoding='utf-8') as f2:
     #     mapping = json.load(f1)
     #     mapping_zh = {translate_func(key): value for key, value in mapping.items()}
     #     json.dump(mapping_zh, f2, ensure_ascii=False, indent=4)
 
-    train_zh_df['text'] = train_df['text'].apply(lambda x: translate_func(x))
-    test_zh_df['text'] = test_df['text'].apply(lambda x: translate_func(x))
+    # 训练集翻译
+    counter = 0
+    for idx, row in train_df.iterrows():
+        try:
+            translated_text = translate_func(row['text'])
+            train_zh_df.loc[idx, 'text'] = translated_text
+            train_zh_df.loc[idx, 'label'] = row['label']
 
-    train_zh_df['label'] = train_df['label']
-    test_zh_df['label'] = test_df['label']
+            counter += 1
+            if counter == 10:
+                train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
+                counter = 0
+        except Exception as e:
+            print(f"翻译第{idx}行时出现异常：{e}")
 
-    train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
-    test_zh_df.to_csv('./data/symptom-disease-test-dataset-zh.csv')
+    # 如果最后一次循环结束后，计数器不为0，则保存一次剩余的结果
+    if counter > 0:
+        train_zh_df.to_csv('./data/symptom-disease-train-dataset-zh.csv')
+
+    # 测试集翻译
+    counter = 0
+    for idx, row in test_df.iterrows():
+        try:
+            translated_text = translate_func(row['text'])
+            test_zh_df.loc[idx, 'text'] = translated_text
+            test_zh_df.loc[idx, 'label'] = row['label']
+
+            counter += 1
+            if counter == 10:
+                test_zh_df.to_csv('./data/symptom-disease-test-dataset-zh.csv')
+                counter = 0
+        except Exception as e:
+            print(f"翻译第{idx}行时出现异常：{e}")
+
+    # 如果最后一次循环结束后，计数器不为0，则保存一次剩余的结果
+    if counter > 0:
+        test_zh_df.to_csv('./data/symptom-disease-test-dataset-zh.csv')
+
+
