@@ -34,7 +34,7 @@ def translate_cattle(text):
 
 class XunFei(object):
     def __init__(self, text):
-        # 以下三个参数到控制台https://console.xfyun.cn/services/its获取
+        # 以下三个参数到控制台 https://console.xfyun.cn/services/its 获取
         self.APPID = "d5f76ad6"
         self.Secret = "YmE1OWE1Mjc4NzFlN2FlZWMxNTI3MWFl"
         self.APIKey = "42909daba6017b059cb5790d7bc58646"
