@@ -50,5 +50,5 @@ if __name__ == '__main__':
     test_zh_df_sorted.drop_duplicates(subset='text', inplace=True)
 
     # 保存结果
-    train_zh_df_sorted.to_csv('./data/symptom-disease-train-dataset-zh-new.csv')
-    test_zh_df_sorted.to_csv('./data/symptom-disease-test-dataset-zh-new.csv')
+    train_zh_df_sorted.to_csv('./data/symptom-disease-train-dataset-zh-new.csv', index=False)
+    test_zh_df_sorted.to_csv('./data/symptom-disease-test-dataset-zh-new.csv', index=False)
