@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class LSTM_TextClassificationModel(nn.Module):
+class TextClassificationModel(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim, num_layers=1, dropout=0.5):
-        super(LSTM_TextClassificationModel, self).__init__()
+        super(TextClassificationModel, self).__init__()
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, num_layers=num_layers, dropout=dropout, batch_first=True)
         self.bn = nn.BatchNorm1d(hidden_dim)  # 添加批标准化层
@@ -31,9 +31,3 @@ class LSTM_TextClassificationModel(nn.Module):
         # 全连接层
         x = self.fc(x)
         return x
-
-
-if __name__ == '__main__':
-    tensor = torch.tensor([[1, 2, 3], [3, 4, 5]])
-    model = LSTM_TextClassificationModel(10, 10, 5, 2)
-    print(model(tensor))

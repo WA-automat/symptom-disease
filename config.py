@@ -1,5 +1,13 @@
 epochs = 250
 batch_size = 64
 learning_rate = 1e-3
-train_path = ''
-test_path = ''
+vocab_size = 1000
+embedding_dim = 30
+hidden_dim = 256
+output_dim = 40
+num_layers = 1
+dropout = 0.5
+train_path = './data/symptom-disease-train-dataset-zh-new.csv'
+test_path = './data/symptom-disease-test-dataset-zh-new.csv'
+mapping_path = './data/mapping-zh-new.json'
+vocab_path = './data/vocab.json'
