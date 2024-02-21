@@ -14,3 +14,4 @@ test_path = './data/symptom-disease-test-dataset-zh-new.csv'  # 测试集路径
 mapping_path = './data/mapping-zh-new.json'  # 映射路径
 vocab_path = './data/vocab.json'  # 词表路径
 stopwords_path = './data/stopwords.txt'  # 停用词路径
+save_path = './model/best_model.pth'  # 保存路径

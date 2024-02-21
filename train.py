@@ -127,5 +127,5 @@ if __name__ == '__main__':
                 break
 
     # 保存模型
-    torch.save(best_model_state_dict, './model/best_model.pth')
+    torch.save(best_model_state_dict, save_path)
     print("Model saved successfully.")
