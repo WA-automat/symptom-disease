@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class TextClassificationModel(nn.Module):
+class LSTM_with_Attention(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim, num_layers=1, dropout=0.5):
-        super(TextClassificationModel, self).__init__()
+        super(LSTM_with_Attention, self).__init__()
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, num_layers=num_layers, dropout=dropout, batch_first=True)
         self.bn = nn.BatchNorm1d(hidden_dim)  # 添加批标准化层

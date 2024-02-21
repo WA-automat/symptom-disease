@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader
 from config import *
 from utils import *
-from model import TextClassificationModel
+from model import LSTM_with_Attention
 
 # 判断是否有cuda
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -33,9 +33,9 @@ with open(stopwords_path, "r", encoding="utf-8") as f:
     stopwords = [line.rstrip('\n') for line in stopwords]
 
 # 模型、优化器与损失函数
-model = TextClassificationModel(vocab_size=len(vocabs), embedding_dim=embedding_dim,
-                                hidden_dim=hidden_dim, output_dim=len(mapping),
-                                num_layers=num_layers, dropout=dropout)
+model = LSTM_with_Attention(vocab_size=len(vocabs), embedding_dim=embedding_dim,
+                            hidden_dim=hidden_dim, output_dim=len(mapping),
+                            num_layers=num_layers, dropout=dropout)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 scheduler = StepLR(optimizer, step_size=step_size, gamma=gamma)
