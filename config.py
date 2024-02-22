@@ -1,11 +1,11 @@
 epochs = 250  # 未触发早停止的最大epochs
 train_batch_size = 32  # 训练批大小
 test_batch_size = 32  # 测试批大小
-learning_rate = 1e-3  # 学习率
+learning_rate = 5e-3  # 学习率
 step_size = 5  # 学习率降低步长
 gamma = 0.1  # 学习率降低倍率
 embedding_dim = 80  # 词向量维度
-hidden_dim = 256  # lstm隐藏层数
+hidden_dim = 256  # lstm隐藏层数1
 num_layers = 2  # lstm层数
 dropout = 0.5  # dropout概率
 early_stopping_patience = 10  # 早停止次数
