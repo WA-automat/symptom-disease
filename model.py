@@ -22,7 +22,7 @@ class LSTM_with_Attention(nn.Module):
         inputs = self.embedding(inputs)
         lstm_out, _ = self.lstm(inputs)
 
-        lstm_out = self.bn1(lstm_out)
+        lstm_out = self.bn1(lstm_out.permute(0, 2, 1)).permute(0, 2, 1)
         lstm_out = F.relu(lstm_out)
         lstm_out = self.dropout1(lstm_out)
 
