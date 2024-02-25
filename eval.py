@@ -34,10 +34,11 @@ def predict(s):
     model.eval()
     x = ['<bos>'] + list(jieba.cut(s)) + ['<eos>']
     x = torch.tensor([vocabs[word] if word in vocabs else vocabs['<unk>'] for word in x])
+    x = x.to(device)
     x = model(x.unsqueeze(0))[0]
     max_values, max_indices = torch.max(x, dim=0)
     return max_values, max_indices
 
 
 if __name__ == '__main__':
-    print(predict("打寒战、关节有点痛、经常呕吐、发高烧、没胃口、眼后疼痛、背后酸痛、红斑"))
+    print(predict("身上痒，皮肤有红点"))
