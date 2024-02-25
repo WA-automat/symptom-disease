@@ -28,6 +28,10 @@ class LSTM_with_Attention(nn.Module):
         x = F.relu(x)
         x = self.dropout(x)
 
+        # 定义残差连接
+        residual = lstm_out[:, -1, :]  # 选择最后一个时间步的输入作为残差项
+        x = x + residual  # 将残差项与当前结果相加
+
         # 全连接层
         x = self.fc(x)
         return x
