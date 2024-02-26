@@ -10,5 +10,8 @@ def predict_disease_api():
     s = request.args.get("s")
     probability, indices = predict(s)
     response = ResponseResult(code=200, msg='预测成功',
-                              data={'disease': rev_mapping[indices.item()], 'probability': probability.item()}).toDict()
+                              data={
+                                  'disease': rev_mapping[indices.item()],
+                                  'probability': probability.item()
+                              }).toDict()
     return response
