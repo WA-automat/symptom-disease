@@ -8,6 +8,7 @@ embedding_dim = 80  # 词向量维度
 hidden_dim = 256  # lstm隐藏层数
 num_layers = 2  # lstm层数
 dropout = 0.5  # dropout概率
+pad_size = 227
 early_stopping_patience = 10  # 早停止次数
 train_path = './data/symptom-disease-train-dataset-zh-new.csv'  # 训练集路径
 test_path = './data/symptom-disease-test-dataset-zh-new.csv'  # 测试集路径

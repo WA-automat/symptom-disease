@@ -1,6 +1,8 @@
 import json
 import jieba
 import torch
+from torch.nn.utils.rnn import pad_sequence
+
 from config import *
 from model import LSTM_with_Attention
 
@@ -33,12 +35,16 @@ def predict(s):
     model = model.to(device)
     model.eval()
     x = ['<bos>'] + list(jieba.cut(s)) + ['<eos>']
-    x = torch.tensor([vocabs[word] if word in vocabs else vocabs['<unk>'] for word in x])
+    # if len(x) < pad_size:
+    #     x = x + (pad_size - len(x)) * ['<pad>']
+    x = torch.tensor([vocabs[word] if word in vocabs else vocabs['<unk>'] for word in x if word not in stopwords])
+    x = pad_sequence([x], batch_first=True, padding_value=vocabs['<pad>'])
     x = x.to(device)
-    x = model(x.unsqueeze(0))[0]
-    max_values, max_indices = torch.max(x, dim=0)
-    return max_values, max_indices
+    x = model(x)[0]
+    x = torch.softmax(x, dim=0)
+    probability, indices = torch.max(x, dim=0)
+    return probability, indices
 
 
 if __name__ == '__main__':
-    print(predict("身上痒，皮肤有红点"))
+    print(predict("我感觉有点低烧，四肢乏力，没什么胃口，还有点怕冷、打喷嚏、流鼻涕，不太舒服。"))
