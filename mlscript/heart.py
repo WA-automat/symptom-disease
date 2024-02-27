@@ -1,15 +1,10 @@
+import joblib
 import pandas as pd
-import sklearn.linear_model
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, BaggingClassifier, AdaBoostClassifier
-from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import PowerTransformer, MinMaxScaler, StandardScaler, Normalizer, SplineTransformer
-from sklearn.svm import SVC
+from sklearn.preprocessing import SplineTransformer
 
 df = pd.read_csv('../data/heart.csv')
 
@@ -35,3 +30,5 @@ if __name__ == '__main__':
     # 计算准确率
     accuracy = accuracy_score(y_test, y_pred)
     print("准确率：", accuracy)
+
+    joblib.dump(model, '../model/heart.dat', compress=3)
