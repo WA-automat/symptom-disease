@@ -54,7 +54,7 @@ def predict_heart_api():
     probability = heart.predict_proba([data])[0]
     return ResponseResult(code=200, msg='预测成功',
                           data={
-                              'result': result,
+                              'result': int(result),
                               'probability': probability.tolist(),
                               'mean': mean,
                               'healthy_mean': healthy_mean
@@ -74,7 +74,7 @@ def predict_diabetes_api():
     probability = diabetes.predict_proba([data])[0]
     return ResponseResult(code=200, msg='预测成功',
                           data={
-                              'result': result,
+                              'result': int(result),
                               'probability': probability.tolist(),
                               'mean': mean,
                               'healthy_mean': healthy_mean
@@ -94,7 +94,7 @@ def predict_lung_cancer_api():
     probability = lung_cancer.predict_proba([data])[0]
     return ResponseResult(code=200, msg='预测成功',
                           data={
-                              'result': result,
+                              'result': int(result),
                               'probability': probability.tolist(),
                               'mean_age': mean_age,
                               'healthy_mean_age': healthy_mean_age
