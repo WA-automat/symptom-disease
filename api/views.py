@@ -1,13 +1,23 @@
 import joblib
+import pandas as pd
 from flask import Blueprint, request
 from api.ResponseResult import ResponseResult
 from eval import predict, rev_mapping
 
 blue = Blueprint('api', __name__)
 
-heart = joblib.load('../model/heart.dat')
-diabetes = joblib.load('../model/diabetes.dat')
-lung_cancer = joblib.load('../model/lung-cancer.dat')
+# 加载数据
+heart_df = pd.read_csv('./data/heart.csv')
+diabetes_df = pd.read_csv('./data/diabetes.csv')
+lung_cancer_df = pd.read_csv('./data/lung-cancer.csv')
+lung_cancer_df['GENDER'] = lung_cancer_df['GENDER'].map({'M': 1, 'F': 0})
+lung_cancer_df['LUNG_CANCER'] = lung_cancer_df['LUNG_CANCER'].map({'YES': 1, 'NO': 0})
+advice_df = pd.read_excel('./data/病症及其对应的建议.xlsx', sheet_name='Sheet1')
+
+# 加载模型
+heart = joblib.load('./model/heart.dat')
+diabetes = joblib.load('./model/diabetes.dat')
+lung_cancer = joblib.load('./model/lung-cancer.dat')
 
 
 @blue.route('/predict/disease', methods=['POST'])
@@ -21,7 +31,9 @@ def predict_disease_api():
     return ResponseResult(code=200, msg='预测成功',
                           data={
                               'disease': rev_mapping[indices.item()],
-                              'probability': probability.item()
+                              'probability': probability.item(),
+                              'advice_xi': advice_df.loc[advice_df['索引'] == indices.item(), '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['索引'] == indices.item(), '中医建议'].values[0]
                           }).toDict()
 
 
@@ -29,33 +41,131 @@ def predict_disease_api():
 def predict_heart_api():
     """
     心脏病预测
-    :return:
+    :return: 是否患上心脏病
     """
-    data = request.get_json()
-    res = heart.predict([data])
+    mean = heart_df[heart_df['target'] == 1].drop(
+        ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal', 'target'],
+        axis=1).mean().to_dict()
+    healthy_mean = heart_df[heart_df['target'] == 0].drop(
+        ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal', 'target'],
+        axis=1).mean().to_dict()
+    data = request.get_json()['data']
+    result = heart.predict([data])[0]
+    probability = heart.predict_proba([data])[0]
     return ResponseResult(code=200, msg='预测成功',
-                          data={'result': res[0]})
+                          data={
+                              'result': result,
+                              'probability': probability.tolist(),
+                              'mean': mean,
+                              'healthy_mean': healthy_mean
+                          }).toDict()
 
 
-@blue.route('/predict/disease', methods=['POST'])
-def predict_disease_api():
+@blue.route('/predict/diabetes', methods=['POST'])
+def predict_diabetes_api():
     """
     糖尿病预测
-    :return:
+    :return: 是否患上糖尿病
     """
-    data = request.get_json()
-    res = diabetes.predict([data])
+    mean = diabetes_df[diabetes_df["Outcome"] == 1].drop(['Outcome'], axis=1).mean().to_dict()
+    healthy_mean = diabetes_df[diabetes_df["Outcome"] == 0].drop(['Outcome'], axis=1).mean().to_dict()
+    data = request.get_json()['data']
+    result = diabetes.predict([data])[0]
+    probability = diabetes.predict_proba([data])[0]
     return ResponseResult(code=200, msg='预测成功',
-                          data={'result': res[0]})
+                          data={
+                              'result': result,
+                              'probability': probability.tolist(),
+                              'mean': mean,
+                              'healthy_mean': healthy_mean
+                          }).toDict()
 
 
 @blue.route('/predict/lung-cancer', methods=['POST'])
 def predict_lung_cancer_api():
     """
     肺癌预测
+    :return: 是否患上肺癌
+    """
+    mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].mean()
+    healthy_mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].mean()
+    data = request.get_json()['data']
+    result = lung_cancer.predict([data])[0]
+    probability = lung_cancer.predict_proba([data])[0]
+    return ResponseResult(code=200, msg='预测成功',
+                          data={
+                              'result': result,
+                              'probability': probability.tolist(),
+                              'mean_age': mean_age,
+                              'healthy_mean_age': healthy_mean_age
+                          }).toDict()
+
+
+@blue.route('/static/heart', methods=['GET'])
+def static_heart():
+    """
+    心脏病静态内容
     :return:
     """
-    data = request.get_json()
-    res = lung_cancer.predict([data])
-    return ResponseResult(code=200, msg='预测成功',
-                          data={'result': res[0]})
+    mean = heart_df[heart_df['target'] == 1].drop(
+        ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal', 'target'],
+        axis=1).mean().to_dict()
+    healthy_mean = heart_df[heart_df['target'] == 0].drop(
+        ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal', 'target'],
+        axis=1).mean().to_dict()
+    heart_cls_df = heart_df[heart_df['target'] == 1]
+    heart_cls_df = heart_cls_df[['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'thal']]
+    cls = {}
+    for column in heart_cls_df.columns:
+        cls[column] = heart_cls_df[column].value_counts(normalize=True).to_dict()
+    return ResponseResult(code=200, msg='获取成功',
+                          data={
+                              'corr': heart_df.corr().values.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '心脏病', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '心脏病', '中医建议'].values[0],
+                              'ratio': cls,
+                              'mean': mean,
+                              'healthy_mean': healthy_mean
+                          }).toDict()
+
+
+@blue.route('/static/diabetes', methods=['GET'])
+def static_diabetes():
+    """
+    糖尿病静态内容
+    :return:
+    """
+    mean = diabetes_df[diabetes_df["Outcome"] == 1].drop(['Outcome'], axis=1).mean().to_dict()
+    healthy_mean = diabetes_df[diabetes_df["Outcome"] == 0].drop(['Outcome'], axis=1).mean().to_dict()
+    return ResponseResult(code=200, msg='获取成功',
+                          data={
+                              'corr': diabetes_df.corr().values.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '糖尿病', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '糖尿病', '中医建议'].values[0],
+                              'mean': mean,
+                              'healthy_mean': healthy_mean
+                          }).toDict()
+
+
+@blue.route('/static/lung-cancer', methods=['GET'])
+def static_lung_cancer():
+    """
+    肺癌静态内容
+    :return:
+    """
+    mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].mean()
+    healthy_mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].mean()
+    lung_cancer_cls_df = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]
+    lung_cancer_cls_df = lung_cancer_cls_df.drop(["AGE", "LUNG_CANCER"], axis=1)
+    cls = {}
+    for column in lung_cancer_cls_df.columns:
+        cls[column] = lung_cancer_cls_df[column].value_counts(normalize=True).to_dict()
+    return ResponseResult(code=200, msg='获取成功',
+                          data={
+                              'corr': lung_cancer_df.corr().values.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '肺癌', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '肺癌', '中医建议'].values[0],
+                              'ratio': cls,
+                              'mean_age': mean_age,
+                              'healthy_mean_age': healthy_mean_age
+                          }).toDict()

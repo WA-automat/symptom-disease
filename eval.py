@@ -44,7 +44,3 @@ def predict(s):
     x = torch.softmax(x, dim=0)
     probability, indices = torch.max(x, dim=0)
     return probability, indices
-
-
-if __name__ == '__main__':
-    print(predict("我感觉有点低烧，四肢乏力，没什么胃口，还有点怕冷、打喷嚏、流鼻涕，不太舒服。"))

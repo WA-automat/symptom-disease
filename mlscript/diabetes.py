@@ -1,4 +1,5 @@
 import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.linear_model import LogisticRegression, RidgeClassifier, RidgeClassifierCV, SGDClassifier
@@ -13,6 +14,7 @@ from sklearn.preprocessing import SplineTransformer, StandardScaler, PowerTransf
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 import joblib
+import seaborn as sns
 
 df = pd.read_csv('../data/diabetes.csv')
 
@@ -22,6 +24,13 @@ if __name__ == '__main__':
     X = df.drop('Outcome', axis=1)
     y = df['Outcome']
 
+    correlations = df.corr()
+    # 绘制相关性矩阵的热力图
+    sns.heatmap(correlations, cmap='coolwarm')
+    plt.title('Correlation Matrix')
+    plt.tight_layout()
+    plt.show()
+
     # 划分训练集和测试集
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
@@ -29,7 +38,7 @@ if __name__ == '__main__':
     model = Pipeline([
         ('transform', PowerTransformer()),
         ('scaler', StandardScaler()),
-        ('logistic', BaggingClassifier(estimator=KNeighborsClassifier()))
+        ('base', SVC())
     ])
     model.fit(X_train, y_train)
 
@@ -44,4 +53,4 @@ if __name__ == '__main__':
     accuracy = accuracy_score(y_test, y_pred)
     print("准确率：", accuracy)
 
-    joblib.dump(model, '../model/diabetes.dat', compress=3)
+    # joblib.dump(model, '../model/diabetes.dat', compress=3)
