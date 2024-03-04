@@ -125,7 +125,10 @@ def static_heart():
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '心脏病', '中医建议'].values[0],
                               'ratio': cls,
                               'mean': mean,
-                              'healthy_mean': healthy_mean
+                              'healthy_mean': healthy_mean,
+                              'list_name': ['年龄', '性别', '胸痛类型', '静息血压', '血清胆固醇',
+                                            '空腹血糖', '静息心电', '最大心率', '心绞痛类型', 'ST压低峰值',
+                                            'ST段斜率', '主要血管数量', '心脏血流显像']
                           }).toDict()
 
 
