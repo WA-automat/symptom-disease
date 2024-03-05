@@ -32,7 +32,7 @@ if __name__ == '__main__':
     model = Pipeline([
         ('transform', PowerTransformer()),
         ('scaler', StandardScaler()),
-        ('base', SVC())
+        ('base', SVC(probability=True))
     ])
     model.fit(X_train, y_train)
 
@@ -44,3 +44,5 @@ if __name__ == '__main__':
     print("准确率：", accuracy)
 
     # joblib.dump(model, '../model/lung-cancer.dat', compress=3)
+    probability = model.predict_proba(X_test)
+    # print(probability)

@@ -53,6 +53,6 @@ if __name__ == '__main__':
     accuracy = accuracy_score(y_test, y_pred)
     print("准确率：", accuracy)
 
-    joblib.dump(model, '../model/diabetes.dat', compress=3)
+    # joblib.dump(model, '../model/diabetes.dat', compress=3)
     # probability = model.predict_proba(X_test)
     # print(probability)
