@@ -193,5 +193,9 @@ def static_lung_cancer():
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '肺癌', '中医建议'].values[0],
                               'ratio': cls,
                               'mean_age': mean_age,
-                              'healthy_mean_age': healthy_mean_age
+                              'healthy_mean_age': healthy_mean_age,
+                              'age_source': [
+                                  lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].values.tolist(),
+                                  lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].values.tolist(),
+                              ]
                           }).toDict()
