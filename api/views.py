@@ -82,7 +82,8 @@ def predict_diabetes_api():
                               'advice_xi': advice_df.loc[advice_df['病症'] == '糖尿病', '西医建议'].values[0],
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '糖尿病', '中医建议'].values[0],
                               'mean': mean,
-                              'healthy_mean': healthy_mean
+                              'healthy_mean': healthy_mean,
+                              'personal': [data[7], data[5], data[2], data[6], data[1], data[4], data[0], data[3]]
                           }).toDict()
 
 
