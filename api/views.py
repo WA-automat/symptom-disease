@@ -149,7 +149,7 @@ def static_heart():
                               'healthy_mean': healthy_mean,
                               'list_name': ['年龄', '性别', '胸痛类型', '静息血压', '血清胆固醇',
                                             '空腹血糖', '静息心电', '最大心率', '心绞痛类型', 'ST压低峰值',
-                                            'ST段斜率', '主要血管数量', '心脏血流显像']
+                                            'ST段斜率', '主要血管数量', '心脏血流显像', '心脏病']
                           }).toDict()
 
 
@@ -168,8 +168,8 @@ def static_diabetes():
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '糖尿病', '中医建议'].values[0],
                               'mean': mean,
                               'healthy_mean': healthy_mean,
-                              'list_name': ['妊娠的次数', '血糖浓度', '血压大小', '皮肤厚度', '胰岛素浓度',
-                                            '身体质量指数', 'BMI', '糖尿病谱系', '年龄']
+                              'list_name': ['妊娠的次数', '血糖浓度', '血压大小', '皮肤厚度', '胰岛素浓度', 'BMI',
+                                            '糖尿病谱系', '年龄', '糖尿病']
                           }).toDict()
 
 
