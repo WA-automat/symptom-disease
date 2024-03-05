@@ -94,7 +94,11 @@ def predict_lung_cancer_api():
     :return: 是否患上肺癌
     """
     mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].mean()
+    age_low = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].quantile(0.25)
+    age_high = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].quantile(0.75)
     healthy_mean_age = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].mean()
+    healthy_age_low = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].quantile(0.25)
+    healthy_age_high = lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].quantile(0.75)
     data = request.get_json()['data']
     result = lung_cancer.predict([data])[0]
     probability = lung_cancer.predict_proba([data])[0]
@@ -105,8 +109,16 @@ def predict_lung_cancer_api():
                               'advice_xi': advice_df.loc[advice_df['病症'] == '肺癌', '西医建议'].values[0],
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '肺癌', '中医建议'].values[0],
                               'mean_age': mean_age,
+                              'age_low': age_low,
+                              'age_high': age_high,
                               'healthy_mean_age': healthy_mean_age,
-                              'personal_age': data[7]
+                              'healthy_age_low': healthy_age_low,
+                              'healthy_age_high': healthy_age_high,
+                              'personal_age': data[7],
+                              'age_source': [
+                                  lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].values.tolist(),
+                                  lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].values.tolist(),
+                              ]
                           }).toDict()
 
 
@@ -155,7 +167,9 @@ def static_diabetes():
                               'advice_xi': advice_df.loc[advice_df['病症'] == '糖尿病', '西医建议'].values[0],
                               'advice_zhong': advice_df.loc[advice_df['病症'] == '糖尿病', '中医建议'].values[0],
                               'mean': mean,
-                              'healthy_mean': healthy_mean
+                              'healthy_mean': healthy_mean,
+                              'list_name': ['妊娠的次数', '血糖浓度', '血压大小', '皮肤厚度', '胰岛素浓度',
+                                            '身体质量指数', 'BMI', '糖尿病谱系', '年龄']
                           }).toDict()
 
 
