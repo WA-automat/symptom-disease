@@ -56,8 +56,11 @@ def predict_heart_api():
                           data={
                               'result': int(result),
                               'probability': probability.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '心脏病', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '心脏病', '中医建议'].values[0],
                               'mean': mean,
-                              'healthy_mean': healthy_mean
+                              'healthy_mean': healthy_mean,
+                              'personal': [data[0], data[11], data[4], data[9], data[7], data[3]]
                           }).toDict()
 
 
@@ -76,6 +79,8 @@ def predict_diabetes_api():
                           data={
                               'result': int(result),
                               'probability': probability.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '糖尿病', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '糖尿病', '中医建议'].values[0],
                               'mean': mean,
                               'healthy_mean': healthy_mean
                           }).toDict()
@@ -96,8 +101,11 @@ def predict_lung_cancer_api():
                           data={
                               'result': int(result),
                               'probability': probability.tolist(),
+                              'advice_xi': advice_df.loc[advice_df['病症'] == '肺癌', '西医建议'].values[0],
+                              'advice_zhong': advice_df.loc[advice_df['病症'] == '肺癌', '中医建议'].values[0],
                               'mean_age': mean_age,
-                              'healthy_mean_age': healthy_mean_age
+                              'healthy_mean_age': healthy_mean_age,
+                              'personal_age': data[7]
                           }).toDict()
 
 
