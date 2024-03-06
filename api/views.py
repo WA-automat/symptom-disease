@@ -114,7 +114,7 @@ def predict_lung_cancer_api():
                               'healthy_mean_age': healthy_mean_age,
                               'healthy_age_low': healthy_age_low,
                               'healthy_age_high': healthy_age_high,
-                              'personal_age': data[7],
+                              'personal_age': data[1],
                               'age_source': [
                                   lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].values.tolist(),
                                   lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].values.tolist(),
