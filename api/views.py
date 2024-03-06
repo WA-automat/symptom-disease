@@ -197,5 +197,9 @@ def static_lung_cancer():
                               'age_source': [
                                   lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 1]['AGE'].values.tolist(),
                                   lung_cancer_df[lung_cancer_df["LUNG_CANCER"] == 0]['AGE'].values.tolist(),
-                              ]
+                              ],
+                              'list_name': ['性别', '年龄', '是否吸烟', '黄色手指',
+                                            '焦虑', 'BMI', '慢性疾病', '疲劳', '过敏',
+                                            '哮喘', '是否喝酒', '呼吸急促', '吞咽困难',
+                                            '胸痛']
                           }).toDict()
